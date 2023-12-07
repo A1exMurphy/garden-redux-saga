@@ -5,11 +5,11 @@ import createSagaMiddleware from "redux-saga";
 import axios from 'axios';
 
 // this startingPlantArray should eventually be removed
-const startingPlantArray = [
-  { id: 1, name: 'Rose' },
-  { id: 2, name: 'Tulip' },
-  { id: 3, name: 'Oak' }
-];
+// const startingPlantArray = [
+//   { id: 1, name: 'Rose' },
+//   { id: 2, name: 'Tulip' },
+//   { id: 3, name: 'Oak' }
+// ];
 
 function* getPlants() {
   try {
@@ -26,18 +26,35 @@ function* getPlants() {
   }
 }
 
-const plantList = (state = startingPlantArray, action) => {
-  switch (action.type) {
-    case 'ADD_PLANT':
-      return [ ...state, action.payload ]
-    default:
-      return state;
+
+
+function* addPlant(action) {
+  try {
+    const response = yield axios({
+      method: "POST",
+      url: "/api/plants",
+      data: action.payload,
+    });
+    yield put({
+      type: "GET_PLANTS",
+    });
+  } catch (error) {
+    alert("SAGA POST error", error);
   }
-};
+}
+// const plantList = (state = startingPlantArray, action) => {
+//   switch (action.type) {
+//     case 'ADD_PLANT':
+//       return [ ...state, action.payload ]
+//     default:
+//       return state;
+//   }
+// };
 
 
 function* rootSaga() {
   yield takeLatest("GET_PLANTS", getPlants);
+  yield takeLatest("ADD_PLANTS", addPlant);
 }
 
 
@@ -59,7 +76,7 @@ const plantReducer = (state = [], action) => {
 // redux logger!
 const store = createStore(
   combineReducers({ 
-    plantList,
+    // plantList,
     plantReducer,
 
    }),
