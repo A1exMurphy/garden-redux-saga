@@ -3,18 +3,31 @@ import { useDispatch, useSelector} from 'react-redux';
 
 
 function PlantList() {
-    const dispatch = useDispatch();
-
-    const reduxState = useSelector(store => store);
 
     useEffect(() => {
-        // dispatch an action to request the plantList from the API
+        getPlants();
     }, []); 
+
+
+    const dispatch = useDispatch();
+
+    
+    
+    const getPlants = () => {
+        dispatch({
+            type: "GET_PLANTS"
+        })
+    }
+    
+    
+    const plantReducer = useSelector((store) => store.plantReducer);
 
     return (
         <div>
-            <h3>This is the plant list</h3>
-            <pre>{JSON.stringify(reduxState)}</pre>
+            {plantReducer.map((plantItem) => {
+                return <p>{plantItem.name}</p>}
+            )}
+            {/* <pre>{JSON.stringify(reduxState)}</pre> */}
         </div>
     );
 }
